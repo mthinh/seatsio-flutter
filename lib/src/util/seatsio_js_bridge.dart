@@ -62,6 +62,9 @@ class SeatsioJsBridge {
       callbacks.add(buildCallbackConfigAsJS("onSelectedObjectBooked"));
     }
 
+    // add session
+    callbacks.add(buildCallbackConfigAsJS("onSessionInitialized"));
+
     return callbacks;
   }
 

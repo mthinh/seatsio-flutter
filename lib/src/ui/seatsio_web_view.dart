@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:seatsio/src/models/seatsio_holdtoken.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../models/seating_chart.dart';
 import '../models/seatsio_category.dart';
@@ -28,6 +29,7 @@ class SeatsioWebView extends StatefulWidget {
     SeatsioObjectsTicketTypesCallback? onReleaseHoldSucceeded,
     SeatsioObjectsTicketTypesCallback? onReleaseHoldFailed,
     SeatsioObjectCallback? onSelectedObjectBooked,
+    SeatsioHoldTokenCallback? onSessionInitialized,
   })  : this._enableDebug = enableDebug,
         this._initialUrl = initialUrl,
         this._onWebViewCreated = onWebViewCreated,
@@ -46,6 +48,7 @@ class SeatsioWebView extends StatefulWidget {
         this._onReleaseHoldSucceeded = onReleaseHoldSucceeded,
         this._onReleaseHoldFailed = onReleaseHoldFailed,
         this._onSelectedObjectBooked = onSelectedObjectBooked,
+        this._onSessionInitialized = onSessionInitialized,
         super(key: key);
 
   /// Output some log if setting the [enableDebug] to true.
@@ -90,6 +93,8 @@ class SeatsioWebView extends StatefulWidget {
   final SeatsioObjectsTicketTypesCallback? _onReleaseHoldFailed;
 
   final SeatsioObjectCallback? _onSelectedObjectBooked;
+
+  final SeatsioHoldTokenCallback? _onSessionInitialized;
 
   @override
   State<StatefulWidget> createState() => _SeatsioWebViewState();
@@ -349,6 +354,19 @@ class _SeatsioWebViewState extends State<SeatsioWebView> {
         },
       ));
     }
+
+    channels.add(JavascriptChannel(
+      name: "onSessionInitialized",
+      onMessageReceived: (JavascriptMessage message) {
+        if (widget._enableDebug)
+          debugPrint(
+              "[Seatsio]-> onSessionInitialized callback message: ${message.message}");
+        final holdToken = SeatsioHoldToken.fromJson(message.message);
+        if (holdToken != null) {
+          widget._onSessionInitialized?.call(holdToken);
+        }
+      },
+    ));
 
     return channels;
   }
