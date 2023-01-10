@@ -188,6 +188,9 @@ abstract class SeatingChartConfig
   /// Possible values: 'continue', 'start', 'manual', 'none' Default: 'none'
   String? get session;
 
+  /// Javascript function that return displayed object labels
+  /// https://docs.seats.io/docs/renderer/config-objectlabel
+  /// objectLabel: "(object) => object.labels.own"
   String? get objectLabel;
 
   /// [objectIcon] must be used with [extraConfig], otherwise it will not take effect.
@@ -237,26 +240,28 @@ abstract class SeatingChartConfig
   bool get enableSelectedObjectBookedCallback;
 
   factory SeatingChartConfig.init() {
-    return SeatingChartConfig((b) => b
-      ..workspaceKey = ""
-      ..eventKey = ""
-      ..region = 'eu'
-      ..language = 'en'
-      ..showLoadingAnimation = true
-      ..enableChartRenderedCallback = true
-      ..enableChartRenderingFailedCallback = true
-      ..enableObjectClickedCallback = true
-      ..enableObjectSelectedCallback = true
-      ..enableObjectDeselectedCallback = true
-      ..enableSelectionValidCallback = false
-      ..enableSelectionInvalidCallback = false
-      ..enableBestAvailableSelectedCallback = false
-      ..enableBestAvailableSelectionFailedCallback = false
-      ..enableHoldSucceededCallback = false
-      ..enableHoldFailedCallback = false
-      ..enableReleaseHoldSucceededCallback = false
-      ..enableReleaseHoldFailedCallback = false
-      ..enableSelectedObjectBookedCallback = false);
+    return SeatingChartConfig(
+      (b) => b
+        ..workspaceKey = ""
+        ..eventKey = ""
+        ..region = 'eu'
+        ..language = 'en'
+        ..showLoadingAnimation = true
+        ..enableChartRenderedCallback = true
+        ..enableChartRenderingFailedCallback = true
+        ..enableObjectClickedCallback = true
+        ..enableObjectSelectedCallback = true
+        ..enableObjectDeselectedCallback = true
+        ..enableSelectionValidCallback = false
+        ..enableSelectionInvalidCallback = false
+        ..enableBestAvailableSelectedCallback = false
+        ..enableBestAvailableSelectionFailedCallback = false
+        ..enableHoldSucceededCallback = false
+        ..enableHoldFailedCallback = false
+        ..enableReleaseHoldSucceededCallback = false
+        ..enableReleaseHoldFailedCallback = false
+        ..enableSelectedObjectBookedCallback = false,
+    );
   }
 
   // todo: Miss some key-values
@@ -276,6 +281,7 @@ abstract class SeatingChartConfig
       "showActiveSectionTooltipOnMobile": showActiveSectionTooltip ?? true,
       "showViewFromYourSeatOnMobile": showViewFromYourSeat ?? true,
       "showSectionContents": showSectionContents ?? "auto",
+      "inputDevice": "touch"
     };
 
     if (pricing != null) {
@@ -315,6 +321,10 @@ abstract class SeatingChartConfig
 
     if (numberOfPlacesToSelect != null) {
       configMap["numberOfPlacesToSelect"] = numberOfPlacesToSelect;
+    }
+
+    if (objectLabel != null) {
+      configMap["objectLabel"] = objectLabel;
     }
 
     if (selectedObjects != null) {
